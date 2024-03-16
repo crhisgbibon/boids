@@ -1,5 +1,9 @@
 "use strict";
 
+import Alpine from 'alpinejs'
+window.Alpine = Alpine
+Alpine.start()
+
 function CalculateVh()
 {
   let vh = window.innerHeight * 0.01;
@@ -36,7 +40,9 @@ class Flock
 
     wrap,
     nearby,
-    close
+    close,
+
+    toggle,
     )
   {
     this.flockSize = flockSize;
@@ -67,6 +73,8 @@ class Flock
 
     this.nearbyBool = nearby;
     this.closeBool = close;
+
+    this.toggle = false;
   }
 
 Start()
@@ -185,10 +193,12 @@ Toggle()
   if(this.iterator === null || this.iterator === undefined)
   {
     this.Iterate();
+    this.toggle = true;
   }
   else
   {
     this.Pause();
+    this.toggle = false;
   }
 }
 
@@ -545,107 +555,107 @@ class FlockAgent
   }
 }
 
-const startButton = document.getElementById("startButton");
-startButton.onclick = function(){ RestartFlock() };
-const playPauseButton = document.getElementById("playPauseButton");
+const startButton = document.getElementsByClassName("startButton");
+for(let i = 0; i < startButton.length; i++)
+{
+  startButton[i].onclick = function(){ RestartFlock() };
+}
 
 const nextButton = document.getElementById("nextButton");
 nextButton.onclick = function(){
   flock.Pause();
-  if(flock.iterator === null) playPauseButton.src = "/play.svg";
   flock.Update();
+  document.getElementById('IS_PAUSED').style.display = '';
+  document.getElementById('IS_PLAYING').style.display = 'none';
 };
 
-// Options Button
 const optionsButton = document.getElementById("optionsButton");
 optionsButton.onclick = function(){ Settings() };
-// Panel
+
 const settingsMenu = document.getElementById("settingsMenu");
 
-// Options
-// Flock size
 const flockSizeInput = document.getElementById("flockSizeInput");
 const flockSizeRange = document.getElementById("flockSizeRange");
 flockSizeRange.onchange = function(){ UpdateSlider(1,
   flockSizeRange.value,
   flockSizeInput)
 };
-// Flock Shape
+
 const flockSizeShapeLine = document.getElementById("flockSizeShapeLine");
 flockSizeShapeLine.onclick = function(){ ChangeShape() };
 const flockSizeShapeCircle = document.getElementById("flockSizeShapeCircle");
 flockSizeShapeCircle.onclick = function(){ ChangeShape() };
-// Min speed
+
 const flockInputMinSpeed = document.getElementById("flockInputMinSpeed");
 const flockRangeMinSpeed = document.getElementById("flockRangeMinSpeed");
 flockRangeMinSpeed.onchange = function(){ UpdateSlider(2,
   flockRangeMinSpeed.value,
   flockInputMinSpeed)
 };
-// Max speed
+
 const flockInputMaxSpeed = document.getElementById("flockInputMaxSpeed");
 const flockRangeMaxSpeed = document.getElementById("flockRangeMaxSpeed");
 flockRangeMaxSpeed.onchange = function(){ UpdateSlider(3,
   flockRangeMaxSpeed.value,
   flockInputMaxSpeed)
 };
-// Seperation
+
 const flockInputSeperation = document.getElementById("flockInputSeperation");
 const flockRangeSeperation = document.getElementById("flockRangeSeperation");
 flockRangeSeperation.onchange = function(){ UpdateSlider(4,
   flockRangeSeperation.value,
   flockInputSeperation)
 };
-// Seperation Factor
+
 const flockInputSeperationFactor = document.getElementById("flockInputSeperationFactor");
 const flockRangeSeperationFactor = document.getElementById("flockRangeSeperationFactor");
 flockRangeSeperationFactor.onchange = function(){ UpdateSlider(5,
   flockRangeSeperationFactor.value,
   flockInputSeperationFactor)
 };
-// Alignment
+
 const flockInputAlignment = document.getElementById("flockInputAlignment");
 const flockRangeAlignment = document.getElementById("flockRangeAlignment");
 flockRangeAlignment.onchange = function(){ UpdateSlider(6,
   flockRangeAlignment.value,
   flockInputAlignment)
 };
-// Cohesion
+
 const flockInputCohesion = document.getElementById("flockInputCohesion");
 const flockRangeCohesion = document.getElementById("flockRangeCohesion");
 flockRangeCohesion.onchange = function(){ UpdateSlider(7,
   flockRangeCohesion.value,
   flockInputCohesion)
 };
-// Turn
+
 const flockInputTurn = document.getElementById("flockInputTurn");
 const flockRangeTurn = document.getElementById("flockRangeTurn");
 flockRangeTurn.onchange = function(){ UpdateSlider(9,
   flockRangeTurn.value,
   flockInputTurn)
 };
-// Tribe
+
 const flockInputTribes = document.getElementById("flockInputTribes");
 const flockRangeTribes = document.getElementById("flockRangeTribes");
 flockRangeTribes.onchange = function(){ UpdateSlider(10,
   flockRangeTribes.value,
   flockInputTribes)
 };
-// Bias
+
 const flockInputBias = document.getElementById("flockInputBias");
 const flockRangeBias = document.getElementById("flockRangeBias");
 flockRangeBias.onchange = function(){ UpdateSlider(8,
   flockRangeBias.value,
   flockInputBias)
 };
-// Variance
+
 const flockRangeVarianceText = document.getElementById("flockRangeVarianceText");
 const flockRangeVariance = document.getElementById("flockRangeVariance");
 flockRangeVariance.onchange = function(){ UpdateSlider(16,
   flockRangeVariance.value,
   flockRangeVarianceText)
 };
-// Box X
+
 const flockInputBoxX = document.getElementById("flockInputBoxX");
 const flockRangeBoxX = document.getElementById("flockRangeBoxX");
 flockRangeBoxX.onchange = function(){ UpdateSlider(11,
@@ -659,39 +669,35 @@ flockRangeBoxY.onchange = function(){ UpdateSlider(12,
   flockRangeBoxY.value,
   flockInputBoxY)
 };
-// Wrap
+
 const flockWrap = document.getElementById("flockWrap");
 flockWrap.onchange = function(){ UpdateSlider(13,
   flockWrap.checked,)
 };
-// Nearby
+
 const flockNearby = document.getElementById("flockNearby");
 flockNearby.onchange = function(){ UpdateSlider(14,
   flockNearby.checked,)
 };
-// Close
+
 const flockClose = document.getElementById("flockClose");
 flockClose.onchange = function(){ UpdateSlider(15,
   flockClose.checked,)
 };
 
-// Create Flock
 const generateButton = document.getElementById("generateButton");
-generateButton.onclick = function(){ Main() };
-// Game container
+generateButton.onclick = function(){ Main(); };
+
 const gameContainer = document.getElementById("gameContainer");
 const gameDiv = document.getElementById("gameDiv");
 const gameCanvas = document.getElementById("gameCanvas");
 const c = gameCanvas.getContext("2d");
 
 let flock = null;
-let toggleS = false;
 
 function Main()
 {
   ReSize();
-
-  playPauseButton.src = "/play.svg";
 
   let w = parseInt(gameCanvas.width);
   let h = parseInt(gameCanvas.height);
@@ -740,7 +746,8 @@ function Main()
   );
 
   flock.Start();
-  settingsMenu.style.display = "none";
+  document.getElementById('IS_PAUSED').style.display = '';
+  document.getElementById('IS_PLAYING').style.display = 'none';
 }
 
 function Settings()
@@ -752,20 +759,29 @@ function Settings()
 function RestartFlock()
 {
   flock.Toggle();
-  if(flock.iterator === null) playPauseButton.src = "/play.svg";
-  else playPauseButton.src = "/pause.svg";
+
+  if(flock.toggle)
+  {
+    document.getElementById('IS_PAUSED').style.display = 'none';
+    document.getElementById('IS_PLAYING').style.display = '';
+  }
+  else
+  {
+    document.getElementById('IS_PAUSED').style.display = '';
+    document.getElementById('IS_PLAYING').style.display = 'none';
+  }
 }
 
 function ReSize()
 {
   gameContainer.width = window.innerWidth;
-  gameContainer.height = window.innerHeight * 0.9;
+  gameContainer.height = window.innerHeight;
   gameDiv.width = window.innerWidth;
-  gameDiv.height = window.innerHeight * 0.9;
+  gameDiv.height = window.innerHeight;
   gameCanvas.width = window.innerWidth;
-  gameCanvas.height = window.innerHeight * 0.9;
+  gameCanvas.height = window.innerHeight;
   c.width = window.innerWidth;
-  c.height = window.innerHeight * 0.9;
+  c.height = window.innerHeight;
   if(flock != null)
   {
     flock.width = gameContainer.scrollWidth;

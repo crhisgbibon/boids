@@ -1,3 +1,3 @@
-# <a href='https://crhisgbibon.github.io/boids/' target='_blank'>Boids</a>
+# Boids
 
-<p>Javascript render of boids.</p>
+<p>Javascript rendering of bird like objects.</p>
